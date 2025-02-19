@@ -50,6 +50,19 @@ app.get('/tasks', (req, res) => {
     });
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.post('/tasks', (req, res) => {
     const parmas = [req.body['title'], req.body['description'], req.body['is_completed']];
     const query = 'INSERT INTO tasks (title, description, is_completed) VALUES(?, ?, ?);'
@@ -66,6 +79,64 @@ app.post('/tasks', (req, res) => {
     });
 
 })
+
+// app.put('/tasks/:id', (req, res) => {
+//     const { id } = req.params;
+//     const { title, description, is_completed } = req.body;
+
+//     if (!title || !description || is_completed === undefined) {
+//         return res.status(400).json({ error: 'All fields (title, description, is_completed) are required' });
+//     }
+
+//     const query = 'UPDATE tasks SET title = ?, description = ?, is_completed = ? WHERE id = ?';
+//     const params = [title, description, is_completed, id];
+
+//     db.query(query, params, (err, results) => {
+//         if (err) {
+//             console.error('Error updating task:', err);
+//             return res.status(500).json({ error: 'Error updating task' });
+//         }
+//         if (results.affectedRows === 0) {
+//             return res.status(404).json({ error: 'Task not found' });
+//         }
+//         res.json({ message: 'Task updated successfully' });
+//     });
+// });
+
+app.put('/tasks/:id', (req, res) => {
+    const taskId = parseInt(req.params.id, 10); // Ensure ID is an integer
+    const { title, description, is_completed } = req.body;
+
+    // Debugging: Log the ID and received data
+    console.log("Updating task with ID:", taskId);
+    console.log("Received data:", req.body);
+
+    // Validate input
+    if (!title || !description || is_completed === undefined) {
+        return res.status(400).json({ error: 'All fields (title, description, is_completed) are required' });
+    }
+
+    const query = 'UPDATE tasks SET title = ?, description = ?, is_completed = ? WHERE id = ?';
+    const params = [title, description, is_completed, taskId];
+
+    db.query(query, params, (err, results) => {
+        if (err) {
+            console.error('Error updating task:', err);
+            return res.status(500).json({ error: 'Error updating task' });
+        }
+
+        console.log("MySQL Results:", results); // Debugging line
+
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ error: 'Task not found' });
+        }
+
+        res.json({ message: 'Task updated successfully' });
+    });
+});
+
+
+
 
 app.listen(port, () => {
     console.log('Express working homie');
