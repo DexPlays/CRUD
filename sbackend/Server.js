@@ -54,7 +54,7 @@ app.get('/tasks', (req, res) => {
 
 
 
-
+//Dexplays
 
 
 
@@ -135,6 +135,19 @@ app.put('/tasks/:id', (req, res) => {
     });
 });
 
+app.delete('/tasks/:id', (req, res) => {
+    const taskId = req.params.id; // Get ID from URL parameter
+
+    const query = "DELETE FROM tasks WHERE id = ?"; 
+
+    db.query(query, [taskId], (err, results) => {
+        if (err) {
+            console.error("Error deleting task:", err);
+            return res.status(500).json({ error: "Error deleting task." });
+        }
+        res.status(200).json({ message: "Task deleted successfully" });
+    });
+});
 
 
 
